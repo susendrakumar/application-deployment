@@ -16,10 +16,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                dir('trend') {
-                    sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                    sh 'docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest'
-                }
+                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
+                sh 'docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest'
             }
         }
 
