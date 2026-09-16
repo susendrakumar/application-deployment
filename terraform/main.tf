@@ -140,24 +140,25 @@ resource "aws_instance" "jenkins" {
 
   user_data = <<-EOF
               #!/bin/bash
+              set -e
+
               apt-get update -y
-              apt-get install -y fontconfig openjdk-17-jre docker.io curl unzip
-              systemctl enable docker
-              systemctl start docker
+              apt-get install -y fontconfig openjdk-21-jre docker.io curl unzip
 
-              curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee \
-                /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+              systemctl enable --now docker
 
-              echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-                https://pkg.jenkins.io/debian-stable binary/ | tee \
-                /etc/apt/sources.list.d/jenkins.list > /dev/null
+              curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key \
+                -o /usr/share/keyrings/jenkins-keyring.asc
+
+              echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" \
+                > /etc/apt/sources.list.d/jenkins.list
 
               apt-get update -y
               apt-get install -y jenkins
-              systemctl enable jenkins
-              systemctl start jenkins
 
               usermod -aG docker jenkins
+
+              systemctl enable --now jenkins
               EOF
 
   tags = {
